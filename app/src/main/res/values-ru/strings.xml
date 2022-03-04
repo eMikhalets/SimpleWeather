@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SimpleWeather</string>
+    <string name="app_unit_millibar">мб</string>
+    <string name="app_unit_inches">дм</string>
+    <string name="app_unit_celsius">\\u00B0С</string>
+    <string name="app_unit_fahrenheit">Ф</string>
+    <string name="app_unit_kilometer">км/ч</string>
+    <string name="app_unit_mile">м/ч</string>
+</resources>
