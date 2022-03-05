@@ -12,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.emikhalets.simpleweather.ui.screens.home.HomeScreen
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 
@@ -25,10 +24,11 @@ class MainActivity : ComponentActivity() {
             var lightTheme by remember { mutableStateOf(true) }
 
             AppTheme(lightTheme) {
-                AppScreen(
-                    onThemeChange = { lightTheme = !lightTheme }
-                ) {
-                    HomeScreen()
+                AppScreen {
+                    HomeScreen(
+                        onThemeChange = { lightTheme = !lightTheme },
+                        onForecastNavigate = {}
+                    )
                 }
             }
         }
@@ -36,26 +36,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppScreen(
-    onThemeChange: () -> Unit,
-    content: @Composable () -> Unit,
-) {
+fun AppScreen(content: @Composable () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         content()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AppScreenPreview() {
-    AppTheme {
-        AppScreen(
-            onThemeChange = {}
-        ) {
-            HomeScreen()
-        }
     }
 }

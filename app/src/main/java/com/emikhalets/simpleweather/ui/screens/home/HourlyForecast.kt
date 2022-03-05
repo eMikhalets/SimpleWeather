@@ -1,8 +1,8 @@
 package com.emikhalets.simpleweather.ui.screens.home
 
-class HourlyWeather(
+class HourlyForecast(
     val maxTemperature: Int,
     val minTemperature: Int,
     val time: String,
-    val icon: String,
+    val iconUrl: String,
 )

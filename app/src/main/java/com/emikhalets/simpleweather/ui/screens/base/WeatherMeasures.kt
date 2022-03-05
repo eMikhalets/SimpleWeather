@@ -7,6 +7,10 @@ class WeatherUnits(
     val pressure: PressureUnits = PressureUnits.MILLIBARS,
     val speed: SpeedUnits = SpeedUnits.KILOMETERS,
 ) {
+
+    fun temperature(): Int = temperature.unit
+    fun pressure(): Int = pressure.unit
+    fun speed(): Int = speed.unit
 }
 
 enum class TemperatureUnits(val unit: Int) {

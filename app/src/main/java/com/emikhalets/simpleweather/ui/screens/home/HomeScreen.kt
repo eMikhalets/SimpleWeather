@@ -31,7 +31,10 @@ import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.homeForecastBackground
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onThemeChange: () -> Unit,
+    onForecastNavigate: () -> Unit,
+) {
     HomeScreen(
         locationName = "Calicut, Kerala",
         dateString = "Sundat, 1 AM",
@@ -41,8 +44,10 @@ fun HomeScreen() {
         pressureValue = 810,
         windSpeedValue = 5,
         humidityValue = 94,
-        hourlyWeatherList = emptyList(),
+        hourlyForecastList = emptyList(),
         units = WeatherUnits(),
+        onThemeChangeClick = onThemeChange,
+        onForecastClick = onForecastNavigate,
     )
 }
 
@@ -56,19 +61,21 @@ fun HomeScreen(
     pressureValue: Int,
     windSpeedValue: Int,
     humidityValue: Int,
-    hourlyWeatherList: List<HourlyWeather>,
+    hourlyForecastList: List<HourlyForecast>,
     units: WeatherUnits,
+    onThemeChangeClick: () -> Unit,
+    onForecastClick: () -> Unit,
 ) {
     val temperatureText = stringResource(
-        R.string.home_value_no_space, temperature, stringResource(units.temperature.unit)
+        R.string.app_value_no_space, temperature, stringResource(units.temperature.unit)
     )
     val pressureText = stringResource(
-        R.string.home_value_no_space, pressureValue, stringResource(units.pressure.unit)
+        R.string.app_value_no_space, pressureValue, stringResource(units.pressure.unit)
     )
     val windSpeedText = stringResource(
-        R.string.home_value_with_space, windSpeedValue, stringResource(units.speed.unit)
+        R.string.app_value_with_space, windSpeedValue, stringResource(units.speed.unit)
     )
-    val humidityText = stringResource(R.string.home_value_no_space, humidityValue, "%")
+    val humidityText = stringResource(R.string.app_value_no_space, humidityValue, "%")
 
     Column(Modifier.fillMaxSize()) {
         Row(
@@ -81,10 +88,14 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                TextPrimary(text = locationName, fontSize = 24.sp, fontWeight = FontWeight.Medium)
+                TextPrimary(text = locationName, fontSize = 28.sp, fontWeight = FontWeight.Medium)
                 TextSecondary(text = dateString, fontSize = 18.sp)
             }
-            AppIcon(imageVector = Icons.Default.Menu, size = 32.dp, onClick = {})
+            AppIcon(
+                imageVector = Icons.Default.Menu,
+                size = 32.dp,
+                onClick = onForecastClick
+            )
         }
         Column(
             verticalArrangement = Arrangement.Center,
@@ -93,7 +104,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .weight(1f)
         ) {
-            AppIcon(imageUrl = weatherIconUrl, size = 100.dp)
+            AppIcon(imageUrl = weatherIconUrl, size = 120.dp)
             TextPrimary(text = temperatureText, fontSize = 52.sp, fontWeight = FontWeight.SemiBold)
             TextSecondary(text = weatherDescription, fontSize = 18.sp)
         }
@@ -117,11 +128,10 @@ fun HomeScreen(
                 HomeWeatherValue(stringResource(R.string.home_pressure), pressureText)
                 HomeWeatherValue(stringResource(R.string.home_wind_speed), windSpeedText)
                 HomeWeatherValue(stringResource(R.string.home_humidity), humidityText)
-                Spacer(modifier = Modifier.height(250.dp))
-                HourlyWeatherGraph(
-                    hourlyWeatherList = hourlyWeatherList
-                )
             }
+            HourlyWeatherGraph(
+                hourlyForecastList = hourlyForecastList
+            )
         }
     }
 }
@@ -153,8 +163,10 @@ fun HomeScreenPreview() {
             pressureValue = 810,
             windSpeedValue = 5,
             humidityValue = 94,
-            hourlyWeatherList = emptyList(),
+            hourlyForecastList = emptyList(),
             units = WeatherUnits(),
+            onThemeChangeClick = {},
+            onForecastClick = {},
         )
     }
 }

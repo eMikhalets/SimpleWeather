@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -31,12 +33,16 @@ fun TextPrimary(
     color: Color = MaterialTheme.colors.primaryText,
     fontSize: TextUnit = 14.sp,
     fontWeight: FontWeight = FontWeight.Normal,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
         color = color,
         fontSize = fontSize,
         fontWeight = fontWeight,
+        overflow = overflow,
+        maxLines = maxLines,
         modifier = modifier
     )
 }
@@ -48,12 +54,16 @@ fun TextSecondary(
     color: Color = MaterialTheme.colors.secondaryText,
     fontSize: TextUnit = 14.sp,
     fontWeight: FontWeight = FontWeight.Normal,
+    overflow: TextOverflow = TextOverflow.Clip,
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
         text = text,
         color = color,
         fontSize = fontSize,
         fontWeight = fontWeight,
+        overflow = overflow,
+        maxLines = maxLines,
         modifier = modifier
     )
 }
