@@ -17,7 +17,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -166,17 +170,22 @@ fun HomeScreenGeneralInfo(
     windSpeed: Int,
     humidity: Int,
 ) {
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(40.dp))
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(iconUrl)
                 .crossfade(true)
-                .error(R.drawable.app_icon)
+                .placeholder(R.drawable.app_icon)
                 .build(),
-            contentDescription = "",
-            modifier = Modifier.size(150.dp)
+            contentDescription = null,
+            modifier = Modifier.size(300.dp)
         )
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
             HomeScreenGeneralInfoValueBlock(
@@ -192,6 +201,7 @@ fun HomeScreenGeneralInfo(
                 value = stringResource(id = R.string.home_humidity_value, humidity)
             )
         }
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 
@@ -200,9 +210,20 @@ fun HomeScreenGeneralInfoValueBlock(
     title: String,
     value: String
 ) {
-    Column {
-        Text(text = title)
-        Text(text = value)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(100.dp)
+    ) {
+        Text(
+            text = title,
+            color = MaterialTheme.colors.secondaryText,
+            fontSize = 16.sp
+        )
+        Text(
+            text = value,
+            color = MaterialTheme.colors.primaryText,
+            fontSize = 20.sp
+        )
     }
 }
 
@@ -211,7 +232,9 @@ fun HomeScreenHourlyForecast(
     hourlyForecast: List<HomeScreenHourlyEntity>
 ) {
     LazyRow(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         items(hourlyForecast) { entity ->
             HomeScreenHourlyBlock(
@@ -229,24 +252,50 @@ fun HomeScreenHourlyBlock(
     time: String,
     temperature: Int,
 ) {
+    val tempUnitStyle = SpanStyle(
+        baselineShift = BaselineShift.Superscript,
+        fontSize = 14.sp
+    )
+
     Row(
-        modifier = Modifier.background(color = Color(0xFF999999))
+        modifier = Modifier
+            .padding(8.dp)
+            .background(
+                color = MaterialTheme.colors.activeBackground,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(20.dp, 16.dp)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(iconUrl)
                 .crossfade(true)
-                .error(R.drawable.app_icon)
+                .placeholder(R.drawable.app_icon)
                 .build(),
-            contentDescription = "",
+            contentDescription = null,
             modifier = Modifier.size(50.dp)
         )
-        Column {
-            Text(text = time)
-            Row {
-                Text(text = temperature.toString())
-                Text(text = stringResource(id = R.string.home_celsius))
-            }
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = time,
+                color = MaterialTheme.colors.primaryText,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = buildAnnotatedString {
+                    append(temperature.toString())
+                    withStyle(tempUnitStyle) {
+                        append(stringResource(id = R.string.home_celsius))
+                    }
+                },
+                color = MaterialTheme.colors.primaryText,
+                fontSize = 26.sp
+            )
         }
     }
 }
