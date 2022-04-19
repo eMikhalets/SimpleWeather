@@ -7,17 +7,22 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val Colors.homeForecastBackground: Color
-    get() = if (isLight) Color(0xFFF7F7F7) else Purple700
-
-val Colors.primaryText: Color
-    get() = if (isLight) Color(0xFF333333) else Purple700
-
-val Colors.secondaryText: Color
-    get() = if (isLight) Color(0xFF777777) else Purple700
-
 val Colors.forecastIcon: Color
     get() = if (isLight) Color(0xFFD2D2D2) else Purple700
+
+
+
+val Colors.primaryText: Color
+    get() = if (isLight) Color(0xFF000000) else Color(0xFFFFFFFF)
+
+val Colors.secondaryText: Color
+    get() = if (isLight) Color(0xFF666666) else Color(0xFFB6B5C5)
+
+val Colors.inactiveBackground: Color
+    get() = if (isLight) Color(0xFF000000) else Color.Black.copy(alpha = 0.5f)
+
+val Colors.activeBackground: Color
+    get() = if (isLight) Color(0xFF000000) else Color(0xFF1B86E6)
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -43,7 +48,7 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun AppTheme(
-    lightTheme: Boolean = true,
+    lightTheme: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colors = if (lightTheme) {

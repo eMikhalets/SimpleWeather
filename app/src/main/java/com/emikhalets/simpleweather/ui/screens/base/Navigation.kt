@@ -23,7 +23,7 @@ sealed class AppScreen(val route: String, val icon: ImageVector) {
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController, AppScreen.Home.route) {
         composable(AppScreen.Home.route) {
-            HomeScreen({}, {})
+            HomeScreen()
         }
         composable(AppScreen.Search.route) {
             SearchScreen()

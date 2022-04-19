@@ -1,152 +1,253 @@
 package com.emikhalets.simpleweather.ui.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.emikhalets.simpleweather.R
-import com.emikhalets.simpleweather.ui.screens.base.AppIcon
-import com.emikhalets.simpleweather.ui.screens.base.TextPrimary
-import com.emikhalets.simpleweather.ui.screens.base.TextSecondary
-import com.emikhalets.simpleweather.ui.screens.base.WeatherUnits
-import com.emikhalets.simpleweather.ui.theme.AppTheme
-import com.emikhalets.simpleweather.ui.theme.homeForecastBackground
+import com.emikhalets.simpleweather.ui.theme.*
+import com.emikhalets.simpleweather.utils.previewHomeScreenHourlyForecast
 
 @Composable
-fun HomeScreen(
-    onThemeChange: () -> Unit,
-    onForecastNavigate: () -> Unit,
-) {
+fun HomeScreen() {
     HomeScreen(
-        locationName = "Calicut, Kerala",
-        dateString = "Sundat, 1 AM",
-        temperature = 28,
-        weatherIconUrl = "",
-        weatherDescription = "Partly Cloudy",
-        pressureValue = 810,
-        windSpeedValue = 5,
-        humidityValue = 94,
-        hourlyForecastList = emptyList(),
-        units = WeatherUnits(),
-        onThemeChangeClick = onThemeChange,
-        onForecastClick = onForecastNavigate,
+        cityName = "",
+        date = "",
+        iconUrl = "",
+        temperature = 0,
+        windSpeed = 0,
+        humidity = 0,
+        hourlyForecast = emptyList(),
     )
 }
 
 @Composable
 fun HomeScreen(
-    locationName: String,
-    dateString: String,
+    cityName: String,
+    date: String,
+    iconUrl: String,
     temperature: Int,
-    weatherIconUrl: String,
-    weatherDescription: String,
-    pressureValue: Int,
-    windSpeedValue: Int,
-    humidityValue: Int,
-    hourlyForecastList: List<HourlyForecast>,
-    units: WeatherUnits,
-    onThemeChangeClick: () -> Unit,
-    onForecastClick: () -> Unit,
+    windSpeed: Int,
+    humidity: Int,
+    hourlyForecast: List<HomeScreenHourlyEntity>,
 ) {
-    val temperatureText = stringResource(
-        R.string.app_value_no_space, temperature, stringResource(units.temperature.unit)
-    )
-    val pressureText = stringResource(
-        R.string.app_value_no_space, pressureValue, stringResource(units.pressure.unit)
-    )
-    val windSpeedText = stringResource(
-        R.string.app_value_with_space, windSpeedValue, stringResource(units.speed.unit)
-    )
-    val humidityText = stringResource(R.string.app_value_no_space, humidityValue, "%")
-
-    Column(Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 24.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                TextPrimary(text = locationName, fontSize = 28.sp, fontWeight = FontWeight.Medium)
-                TextSecondary(text = dateString, fontSize = 18.sp)
-            }
-            AppIcon(
-                imageVector = Icons.Default.Menu,
-                size = 32.dp,
-                onClick = onForecastClick
-            )
-        }
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-        ) {
-            AppIcon(imageUrl = weatherIconUrl, size = 120.dp)
-            TextPrimary(text = temperatureText, fontSize = 52.sp, fontWeight = FontWeight.SemiBold)
-            TextSecondary(text = weatherDescription, fontSize = 18.sp)
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-                .background(
-                    color = MaterialTheme.colors.homeForecastBackground,
-                    shape = RoundedCornerShape(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF0C0C40),
+                        Color(0xFF060620)
+                    )
                 )
-                .padding(12.dp)
-        ) {
-            TextPrimary(
-                text = stringResource(R.string.home_today),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(Modifier.fillMaxWidth()) {
-                HomeWeatherValue(stringResource(R.string.home_pressure), pressureText)
-                HomeWeatherValue(stringResource(R.string.home_wind_speed), windSpeedText)
-                HomeWeatherValue(stringResource(R.string.home_humidity), humidityText)
-            }
-            HourlyWeatherGraph(
-                hourlyForecastList = hourlyForecastList
+
+    ) {
+        HomeScreenHeader(
+            cityName = cityName,
+            date = date,
+        )
+        HomeScreenGeneralInfo(
+            iconUrl = iconUrl,
+            temperature = temperature,
+            windSpeed = windSpeed,
+            humidity = humidity
+        )
+        HomeScreenHourlyForecast(
+            hourlyForecast = hourlyForecast
+        )
+    }
+}
+
+@Composable
+fun HomeScreenHeader(
+    cityName: String,
+    date: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Spacer(modifier = Modifier.height(52.dp))
+        Text(
+            text = cityName,
+            color = MaterialTheme.colors.primaryText,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = date,
+            color = MaterialTheme.colors.secondary,
+            fontSize = 18.sp
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        HomeScreenHeaderSwitcher()
+    }
+}
+
+@Composable
+fun HomeScreenHeaderSwitcher() {
+    var activeFirst by remember { mutableStateOf(true) }
+
+    Row(
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colors.inactiveBackground,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clip(RoundedCornerShape(12.dp))
+    ) {
+        Text(
+            text = stringResource(id = R.string.home_forecast),
+            fontSize = 16.sp,
+            color = activeTextColor(activeFirst),
+            modifier = Modifier
+                .activeBackground(activeFirst)
+                .padding(40.dp, 16.dp)
+                .clickable { activeFirst = true }
+        )
+        Text(
+            text = stringResource(id = R.string.home_air_quality),
+            fontSize = 16.sp,
+            color = activeTextColor(!activeFirst),
+            modifier = Modifier
+                .activeBackground(!activeFirst)
+                .padding(40.dp, 16.dp)
+                .clickable { activeFirst = false }
+        )
+    }
+}
+
+private fun Modifier.activeBackground(active: Boolean): Modifier = composed {
+    if (active) {
+        background(
+            color = MaterialTheme.colors.activeBackground,
+            shape = RoundedCornerShape(12.dp)
+        )
+    } else {
+        background(color = Color.Transparent)
+    }
+}
+
+@Composable
+private fun activeTextColor(active: Boolean): Color {
+    return if (active) {
+        MaterialTheme.colors.primaryText
+    } else {
+        MaterialTheme.colors.secondaryText
+    }
+}
+
+@Composable
+fun HomeScreenGeneralInfo(
+    iconUrl: String,
+    temperature: Int,
+    windSpeed: Int,
+    humidity: Int,
+) {
+    Column {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(iconUrl)
+                .crossfade(true)
+                .error(R.drawable.app_icon)
+                .build(),
+            contentDescription = "",
+            modifier = Modifier.size(150.dp)
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            HomeScreenGeneralInfoValueBlock(
+                title = stringResource(id = R.string.home_temperature),
+                value = stringResource(id = R.string.home_temperature_value, temperature)
+            )
+            HomeScreenGeneralInfoValueBlock(
+                title = stringResource(id = R.string.home_wind_speed),
+                value = stringResource(id = R.string.home_wind_speed_value, windSpeed)
+            )
+            HomeScreenGeneralInfoValueBlock(
+                title = stringResource(id = R.string.home_humidity),
+                value = stringResource(id = R.string.home_humidity_value, humidity)
             )
         }
     }
 }
 
 @Composable
-fun RowScope.HomeWeatherValue(text: String, value: String) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)
+fun HomeScreenGeneralInfoValueBlock(
+    title: String,
+    value: String
+) {
+    Column {
+        Text(text = title)
+        Text(text = value)
+    }
+}
+
+@Composable
+fun HomeScreenHourlyForecast(
+    hourlyForecast: List<HomeScreenHourlyEntity>
+) {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        TextSecondary(text = text, fontSize = 16.sp, fontWeight = FontWeight.Normal)
-        Spacer(modifier = Modifier.height(4.dp))
-        TextPrimary(text = value, fontSize = 20.sp, fontWeight = FontWeight.Medium)
+        items(hourlyForecast) { entity ->
+            HomeScreenHourlyBlock(
+                iconUrl = entity.iconUrl,
+                time = entity.time,
+                temperature = entity.temperature,
+            )
+        }
+    }
+}
+
+@Composable
+fun HomeScreenHourlyBlock(
+    iconUrl: String,
+    time: String,
+    temperature: Int,
+) {
+    Row(
+        modifier = Modifier.background(color = Color(0xFF999999))
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(iconUrl)
+                .crossfade(true)
+                .error(R.drawable.app_icon)
+                .build(),
+            contentDescription = "",
+            modifier = Modifier.size(50.dp)
+        )
+        Column {
+            Text(text = time)
+            Row {
+                Text(text = temperature.toString())
+                Text(text = stringResource(id = R.string.home_celsius))
+            }
+        }
     }
 }
 
@@ -155,18 +256,13 @@ fun RowScope.HomeWeatherValue(text: String, value: String) {
 fun HomeScreenPreview() {
     AppTheme {
         HomeScreen(
-            locationName = "Calicut, Kerala",
-            dateString = "Sunday, 1 AM",
+            cityName = "San Fransisco",
+            date = "May 28, 2021",
+            iconUrl = "",
             temperature = 28,
-            weatherIconUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fmyicons.co%2F&psig=AOvVaw2fTL5kuQHMqrfP7zdUPPgS&ust=1646499697299000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNiSl773rPYCFQAAAAAdAAAAABAO",
-            weatherDescription = "Partly Cloudy",
-            pressureValue = 810,
-            windSpeedValue = 5,
-            humidityValue = 94,
-            hourlyForecastList = emptyList(),
-            units = WeatherUnits(),
-            onThemeChangeClick = {},
-            onForecastClick = {},
+            windSpeed = 10,
+            humidity = 75,
+            hourlyForecast = previewHomeScreenHourlyForecast(),
         )
     }
 }

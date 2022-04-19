@@ -3,7 +3,6 @@ package com.emikhalets.simpleweather.data.remote
 import com.emikhalets.simpleweather.utils.tempApiKey
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -16,12 +15,10 @@ object ApiFactory {
 
     private val contentType = "application/json".toMediaType()
 
-    private val jsonConfig = JsonConfiguration.Stable.copy(
-        prettyPrint = true,
+    private val json = Json {
+        prettyPrint = true
         ignoreUnknownKeys = true
-    )
-
-    private val json = Json(jsonConfig)
+    }
 
     private val apiKeyInterceptor = Interceptor { chain ->
         val request = chain.request()
