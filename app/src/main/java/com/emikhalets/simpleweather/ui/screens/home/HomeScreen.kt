@@ -2,33 +2,46 @@ package com.emikhalets.simpleweather.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.emikhalets.simpleweather.R
-import com.emikhalets.simpleweather.ui.theme.*
+import com.emikhalets.simpleweather.ui.screens.base.HourlyForecast
+import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
+import com.emikhalets.simpleweather.ui.theme.AppTheme
+import com.emikhalets.simpleweather.ui.theme.inactiveBackground
+import com.emikhalets.simpleweather.ui.theme.primaryText
+import com.emikhalets.simpleweather.ui.theme.secondaryText
+import com.emikhalets.simpleweather.utils.activeBackground
+import com.emikhalets.simpleweather.utils.activeTextColor
+import com.emikhalets.simpleweather.utils.appSurface
 import com.emikhalets.simpleweather.utils.previewHomeScreenHourlyForecast
 
 @Composable
@@ -52,19 +65,12 @@ fun HomeScreen(
     temperature: Int,
     windSpeed: Int,
     humidity: Int,
-    hourlyForecast: List<HomeScreenHourlyEntity>,
+    hourlyForecast: List<HourlyForecastEntity>,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF0C0C40),
-                        Color(0xFF060620)
-                    )
-                )
-            )
+            .appSurface()
 
     ) {
         HomeScreenHeader(
@@ -77,8 +83,14 @@ fun HomeScreen(
             windSpeed = windSpeed,
             humidity = humidity
         )
-        HomeScreenHourlyForecast(
-            hourlyForecast = hourlyForecast
+        HourlyForecast(
+            hourlyForecast = hourlyForecast,
+            rightText = {
+                Text(
+                    text = stringResource(id = R.string.home_view_full),
+                    color = Color.Blue
+                )
+            }
         )
     }
 }
@@ -143,26 +155,6 @@ fun HomeScreenHeaderSwitcher() {
     }
 }
 
-private fun Modifier.activeBackground(active: Boolean): Modifier = composed {
-    if (active) {
-        background(
-            color = MaterialTheme.colors.activeBackground,
-            shape = RoundedCornerShape(12.dp)
-        )
-    } else {
-        background(color = Color.Transparent)
-    }
-}
-
-@Composable
-private fun activeTextColor(active: Boolean): Color {
-    return if (active) {
-        MaterialTheme.colors.primaryText
-    } else {
-        MaterialTheme.colors.secondaryText
-    }
-}
-
 @Composable
 fun HomeScreenGeneralInfo(
     iconUrl: String,
@@ -224,79 +216,6 @@ fun HomeScreenGeneralInfoValueBlock(
             color = MaterialTheme.colors.primaryText,
             fontSize = 20.sp
         )
-    }
-}
-
-@Composable
-fun HomeScreenHourlyForecast(
-    hourlyForecast: List<HomeScreenHourlyEntity>
-) {
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        items(hourlyForecast) { entity ->
-            HomeScreenHourlyBlock(
-                iconUrl = entity.iconUrl,
-                time = entity.time,
-                temperature = entity.temperature,
-            )
-        }
-    }
-}
-
-@Composable
-fun HomeScreenHourlyBlock(
-    iconUrl: String,
-    time: String,
-    temperature: Int,
-) {
-    val tempUnitStyle = SpanStyle(
-        baselineShift = BaselineShift.Superscript,
-        fontSize = 14.sp
-    )
-
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .background(
-                color = MaterialTheme.colors.activeBackground,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(20.dp, 16.dp)
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(iconUrl)
-                .crossfade(true)
-                .placeholder(R.drawable.app_icon)
-                .build(),
-            contentDescription = null,
-            modifier = Modifier.size(50.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = time,
-                color = MaterialTheme.colors.primaryText,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = buildAnnotatedString {
-                    append(temperature.toString())
-                    withStyle(tempUnitStyle) {
-                        append(stringResource(id = R.string.home_celsius))
-                    }
-                },
-                color = MaterialTheme.colors.primaryText,
-                fontSize = 26.sp
-            )
-        }
     }
 }
 

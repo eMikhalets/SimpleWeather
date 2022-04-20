@@ -7,11 +7,6 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val Colors.forecastIcon: Color
-    get() = if (isLight) Color(0xFFD2D2D2) else Purple700
-
-
-
 val Colors.primaryText: Color
     get() = if (isLight) Color(0xFF000000) else Color(0xFFFFFFFF)
 
@@ -23,6 +18,12 @@ val Colors.inactiveBackground: Color
 
 val Colors.activeBackground: Color
     get() = if (isLight) Color(0xFF000000) else Color(0xFF1B86E6)
+
+val Colors.surfaceTop: Color
+    get() = if (isLight) Color(0xFF000000) else Color(0xFF0C0C40)
+
+val Colors.surfaceBottom: Color
+    get() = if (isLight) Color(0xFF000000) else Color(0xFF060620)
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
