@@ -23,7 +23,7 @@
     <string name="home_celsius">\u00B0C</string>
     <string name="home_view_full">View full report</string>
 
-    <string name="forecast_next_days_weather">Next 7 days</string>
-    <string name="forecast_sun_time">Sunrise and sunset</string>
-    <string name="forecast_uv_index">UV index</string>
+    <string name="search_title">Pick location</string>
+    <string name="search_description">Find the area or city that you want to know the weather info at this time</string>
+    <string name="search_location_hint">Search</string>
 </resources>

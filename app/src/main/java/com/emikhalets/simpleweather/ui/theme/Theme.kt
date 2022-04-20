@@ -25,17 +25,20 @@ val Colors.surfaceTop: Color
 val Colors.surfaceBottom: Color
     get() = if (isLight) Color(0xFF000000) else Color(0xFF060620)
 
+val Colors.textFieldBackground: Color
+    get() = if (isLight) Color(0xFF000000) else Color(0xFF222248)
+
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200,
+    primary = Color(0xFFFFFFFF),
+    primaryVariant = Color(0xFF3700B3),
+    secondary = Color(0xFFB6B5C5),
     surface = Color(0xFF121212),
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200,
+    primary = Color(0xFF000000),
+    primaryVariant = Color(0xFF3700B3),
+    secondary = Color(0xFF666666),
     surface = Color.White,
 
     /* Other default colors to override
