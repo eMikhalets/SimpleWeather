@@ -1,7 +1,9 @@
 package com.emikhalets.simpleweather.data.remote.entity
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Condition(
     @SerialName("code") val code: Int?,
     @SerialName("icon") val icon: String?,

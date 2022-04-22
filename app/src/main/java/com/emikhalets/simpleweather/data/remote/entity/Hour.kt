@@ -1,7 +1,9 @@
 package com.emikhalets.simpleweather.data.remote.entity
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Hour(
     @SerialName("chance_of_rain") val chance_of_rain: Int?,
     @SerialName("chance_of_snow") val chance_of_snow: Int?,

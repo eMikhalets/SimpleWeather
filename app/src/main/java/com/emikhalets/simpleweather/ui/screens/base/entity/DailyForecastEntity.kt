@@ -1,7 +1,7 @@
 package com.emikhalets.simpleweather.ui.screens.base.entity
 
-data class HourlyForecastEntity(
+data class DailyForecastEntity(
     val iconUrl: String = "",
-    val time: String = "",
+    val date: String = "",
     val temperature: Int = 0,
 )

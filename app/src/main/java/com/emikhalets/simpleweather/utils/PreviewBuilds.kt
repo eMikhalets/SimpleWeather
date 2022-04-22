@@ -1,7 +1,16 @@
 package com.emikhalets.simpleweather.utils
 
+import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import com.emikhalets.simpleweather.ui.screens.search.SearchEntity
+
+fun previewHomeScreenDailyForecast(): List<DailyForecastEntity> {
+    return listOf(
+        DailyForecastEntity("", "01.02.2022", 20),
+        DailyForecastEntity("", "01.02.2022", 20),
+        DailyForecastEntity("", "01.02.2022", 20),
+    )
+}
 
 fun previewHomeScreenHourlyForecast(): List<HourlyForecastEntity> {
     return listOf(

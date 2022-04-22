@@ -147,9 +147,8 @@ fun HourlyForecastBlock(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(iconUrl)
+                .data(iconUrl.replace("//", ""))
                 .crossfade(true)
-                .placeholder(R.drawable.app_icon)
                 .build(),
             contentDescription = null,
             modifier = Modifier.size(50.dp)

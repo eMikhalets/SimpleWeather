@@ -1,5 +1,6 @@
 package com.emikhalets.simpleweather.ui.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,24 +36,35 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.ui.screens.base.HourlyForecast
+import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.utils.activeBackground
 import com.emikhalets.simpleweather.utils.activeTextColor
 import com.emikhalets.simpleweather.utils.appSurface
+import com.emikhalets.simpleweather.utils.previewHomeScreenDailyForecast
 import com.emikhalets.simpleweather.utils.previewHomeScreenHourlyForecast
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeViewModel) {
+    val state = viewModel.state
+
+    LaunchedEffect("") {
+        viewModel.getWeather()
+    }
+
+    state.current ?: return
+
     HomeScreen(
-        cityName = "",
-        date = "",
-        iconUrl = "",
-        temperature = 0,
-        windSpeed = 0,
-        humidity = 0,
-        hourlyForecast = emptyList(),
+        cityName = state.current.location,
+        date = state.current.date,
+        iconUrl = state.current.iconUrl,
+        temperature = state.current.temperature,
+        windSpeed = state.current.windSpeed,
+        humidity = state.current.humidity,
+        dailyForecast = state.daily,
+        hourlyForecast = state.hourly,
     )
 }
 
@@ -63,6 +76,7 @@ fun HomeScreen(
     temperature: Int,
     windSpeed: Int,
     humidity: Int,
+    dailyForecast: List<DailyForecastEntity>,
     hourlyForecast: List<HourlyForecastEntity>,
 ) {
     Column(
@@ -160,18 +174,18 @@ fun HomeScreenGeneralInfo(
     windSpeed: Int,
     humidity: Int,
 ) {
+    Log.d("TAG", "url: ${iconUrl.replace("//", "")}")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(iconUrl)
+                .data(iconUrl.replace("//", ""))
                 .crossfade(true)
-                .placeholder(R.drawable.app_icon)
                 .build(),
             contentDescription = null,
-            modifier = Modifier.size(300.dp)
+            modifier = Modifier.size(200.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -228,6 +242,7 @@ fun HomeScreenPreview() {
             temperature = 28,
             windSpeed = 10,
             humidity = 75,
+            dailyForecast = previewHomeScreenDailyForecast(),
             hourlyForecast = previewHomeScreenHourlyForecast(),
         )
     }

@@ -11,7 +11,7 @@ import retrofit2.create
 
 object ApiFactory {
 
-    private const val BASE_URL = "http://api.weatherapi.com/v1"
+    private const val BASE_URL = "http://api.weatherapi.com/v1/"
 
     private val contentType = "application/json".toMediaType()
 

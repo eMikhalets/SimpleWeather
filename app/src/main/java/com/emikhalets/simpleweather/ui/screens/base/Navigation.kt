@@ -6,10 +6,12 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.emikhalets.simpleweather.ui.screens.home.HomeScreen
+import com.emikhalets.simpleweather.ui.screens.home.HomeViewModel
 import com.emikhalets.simpleweather.ui.screens.search.SearchScreen
 import com.emikhalets.simpleweather.ui.screens.settings.SettingsScreen
 
@@ -23,7 +25,7 @@ sealed class AppScreen(val route: String, val icon: ImageVector) {
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController, AppScreen.Home.route) {
         composable(AppScreen.Home.route) {
-            HomeScreen()
+            HomeScreen(viewModel = hiltViewModel())
         }
         composable(AppScreen.Search.route) {
             SearchScreen()

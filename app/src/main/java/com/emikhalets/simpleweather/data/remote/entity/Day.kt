@@ -1,7 +1,9 @@
 package com.emikhalets.simpleweather.data.remote.entity
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Day(
     @SerialName("avghumidity") val avghumidity: Double?,
     @SerialName("avgtemp_c") val avgtemp_c: Double?,
