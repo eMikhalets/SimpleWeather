@@ -38,8 +38,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
-import com.emikhalets.simpleweather.ui.theme.primaryText
-import com.emikhalets.simpleweather.ui.theme.secondaryText
 import com.emikhalets.simpleweather.ui.theme.surfaceBottom
 import com.emikhalets.simpleweather.utils.activeBackground
 import com.emikhalets.simpleweather.utils.appSurface
@@ -75,8 +73,8 @@ private fun AppBottomBar(navController: NavHostController) {
         screens.forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(screen.icon, contentDescription = null) },
-                selectedContentColor = MaterialTheme.colors.primaryText,
-                unselectedContentColor = MaterialTheme.colors.secondaryText,
+                selectedContentColor = MaterialTheme.colors.primary,
+                unselectedContentColor = MaterialTheme.colors.secondary,
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 onClick = {
                     navController.navigate(screen.route) {
@@ -106,7 +104,7 @@ fun HourlyForecast(
             Text(
                 text = stringResource(id = R.string.app_today),
                 fontSize = 24.sp,
-                color = MaterialTheme.colors.primaryText,
+                color = MaterialTheme.colors.primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -162,7 +160,7 @@ fun HourlyForecastBlock(
         ) {
             Text(
                 text = time,
-                color = MaterialTheme.colors.primaryText,
+                color = MaterialTheme.colors.primary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -174,7 +172,7 @@ fun HourlyForecastBlock(
                         append(stringResource(id = R.string.home_celsius))
                     }
                 },
-                color = MaterialTheme.colors.primaryText,
+                color = MaterialTheme.colors.primary,
                 fontSize = 26.sp
             )
         }

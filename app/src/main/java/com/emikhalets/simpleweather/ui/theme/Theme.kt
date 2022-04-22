@@ -7,14 +7,8 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val Colors.primaryText: Color
-    get() = if (isLight) Color(0xFF000000) else Color(0xFFFFFFFF)
-
-val Colors.secondaryText: Color
-    get() = if (isLight) Color(0xFF666666) else Color(0xFFB6B5C5)
-
 val Colors.inactiveBackground: Color
-    get() = if (isLight) Color(0xFF000000) else Color.Black.copy(alpha = 0.5f)
+    get() = if (isLight) Color(0xFF000000) else Color.White.copy(alpha = 0.05f)
 
 val Colors.activeBackground: Color
     get() = if (isLight) Color(0xFF000000) else Color(0xFF1B86E6)

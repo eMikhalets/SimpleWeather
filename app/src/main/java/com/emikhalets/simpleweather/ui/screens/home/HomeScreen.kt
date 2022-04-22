@@ -37,8 +37,6 @@ import com.emikhalets.simpleweather.ui.screens.base.HourlyForecast
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
-import com.emikhalets.simpleweather.ui.theme.primaryText
-import com.emikhalets.simpleweather.ui.theme.secondaryText
 import com.emikhalets.simpleweather.utils.activeBackground
 import com.emikhalets.simpleweather.utils.activeTextColor
 import com.emikhalets.simpleweather.utils.appSurface
@@ -107,7 +105,7 @@ fun HomeScreenHeader(
         Spacer(modifier = Modifier.height(52.dp))
         Text(
             text = cityName,
-            color = MaterialTheme.colors.primaryText,
+            color = MaterialTheme.colors.primary,
             fontSize = 28.sp,
             fontWeight = FontWeight.Medium
         )
@@ -208,12 +206,12 @@ fun HomeScreenGeneralInfoValueBlock(
     ) {
         Text(
             text = title,
-            color = MaterialTheme.colors.secondaryText,
+            color = MaterialTheme.colors.secondary,
             fontSize = 16.sp
         )
         Text(
             text = value,
-            color = MaterialTheme.colors.primaryText,
+            color = MaterialTheme.colors.primary,
             fontSize = 20.sp
         )
     }

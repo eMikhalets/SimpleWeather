@@ -1,6 +1,8 @@
 package com.emikhalets.simpleweather.ui.screens.search
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -38,15 +43,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.ui.theme.AppTheme
-import com.emikhalets.simpleweather.ui.theme.primaryText
-import com.emikhalets.simpleweather.ui.theme.secondaryText
+import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.ui.theme.textFieldBackground
+import com.emikhalets.simpleweather.utils.activeBackground
 import com.emikhalets.simpleweather.utils.appSurface
+import com.emikhalets.simpleweather.utils.previewSearchScreenLocationList
 
 @Composable
 fun SearchScreen() {
     var searchQuery by remember { mutableStateOf("") }
+    var selectedPos by remember { mutableStateOf(-1) }
 
+    SearchScreen(
+        searchQuery = searchQuery,
+        locationList = emptyList(),
+        selectedPos = selectedPos,
+        onSearchQueryChange = { newQuery -> searchQuery = newQuery },
+        onSelectPosChange = { newPos -> selectedPos = newPos }
+    )
+}
+
+@Composable
+fun SearchScreen(
+    searchQuery: String,
+    locationList: List<SearchEntity>,
+    selectedPos: Int,
+    onSearchQueryChange: (String) -> Unit,
+    onSelectPosChange: (Int) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,8 +78,13 @@ fun SearchScreen() {
     ) {
         SearchScreenHeader(
             searchQuery = searchQuery,
-            onSearchQueryChange = { newQuery -> searchQuery = newQuery },
+            onSearchQueryChange = onSearchQueryChange,
             onLocationClick = { /*TODO*/ }
+        )
+        SearchScreenResultGrid(
+            locationList = locationList,
+            selectedPos = selectedPos,
+            onSelectPosChange = onSelectPosChange
         )
     }
 }
@@ -75,14 +104,14 @@ fun SearchScreenHeader(
         Spacer(modifier = Modifier.height(52.dp))
         Text(
             text = stringResource(id = R.string.search_title),
-            color = MaterialTheme.colors.primaryText,
+            color = MaterialTheme.colors.primary,
             fontSize = 28.sp,
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(id = R.string.search_description),
-            color = MaterialTheme.colors.secondaryText,
+            color = MaterialTheme.colors.secondary,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             lineHeight = 28.sp
@@ -141,6 +170,54 @@ fun SearchScreenHeader(
                 )
             }
         }
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SearchScreenResultGrid(
+    locationList: List<SearchEntity>,
+    selectedPos: Int,
+    onSelectPosChange: (Int) -> Unit,
+) {
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(2),
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
+        itemsIndexed(locationList) { index, entity ->
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.colors.inactiveBackground,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .activeBackground(index == selectedPos)
+                    .padding(16.dp, 8.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { onSelectPosChange(index) }
+            ) {
+                Text(
+                    text = entity.name,
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 24.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = entity.region,
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = entity.country,
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 20.sp
+                )
+            }
+        }
     }
 }
 
@@ -149,6 +226,11 @@ fun SearchScreenHeader(
 fun SearchScreenPreview() {
     AppTheme {
         SearchScreen(
+            searchQuery = "London",
+            locationList = previewSearchScreenLocationList(),
+            selectedPos = 0,
+            onSearchQueryChange = {},
+            onSelectPosChange = {},
         )
     }
 }
