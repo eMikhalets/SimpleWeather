@@ -50,6 +50,8 @@ android {
 
 dependencies {
 
+    def roomVersion = "2.4.2"
+
     // Core
     implementation('androidx.core:core-ktx:1.7.0')
     implementation('androidx.lifecycle:lifecycle-runtime-ktx:2.4.1')
@@ -71,6 +73,11 @@ dependencies {
     // DI
     implementation 'com.google.dagger:hilt-android:2.41'
     kapt 'com.google.dagger:hilt-compiler:2.41'
+
+    // Database
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     // Third-party
     implementation('io.coil-kt:coil-compose:2.0.0-rc03')
