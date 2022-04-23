@@ -1,6 +1,5 @@
 package com.emikhalets.simpleweather.ui.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -28,14 +31,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.emikhalets.simpleweather.R
-import com.emikhalets.simpleweather.ui.screens.base.HourlyForecast
 import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
@@ -83,7 +89,7 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .appSurface()
-
+            .verticalScroll(rememberScrollState())
     ) {
         HomeScreenHeader(
             cityName = cityName,
@@ -95,15 +101,43 @@ fun HomeScreen(
             windSpeed = windSpeed,
             humidity = humidity
         )
-        HourlyForecast(
-            hourlyForecast = hourlyForecast,
-            rightText = {
+        HomeScreenForecast(
+            list = dailyForecast,
+            primaryText = stringResource(id = R.string.home_forecast_daily),
+            secondaryText = {
                 Text(
                     text = stringResource(id = R.string.home_view_full),
                     color = Color.Blue
                 )
+            },
+            itemContent = { entity ->
+                HomeScreenForecastDaily(
+                    iconUrl = entity.iconUrl,
+                    date = entity.date,
+                    temperature = entity.temperature,
+                    isActive = false,
+                )
             }
         )
+        HomeScreenForecast(
+            list = hourlyForecast,
+            primaryText = stringResource(id = R.string.home_forecast_hourly),
+            secondaryText = {
+                Text(
+                    text = stringResource(id = R.string.home_view_full),
+                    color = Color.Blue
+                )
+            },
+            itemContent = { entity ->
+                HomeScreenForecastHourly(
+                    iconUrl = entity.iconUrl,
+                    time = entity.time,
+                    temperature = entity.temperature,
+                    isActive = false,
+                )
+            }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -174,14 +208,13 @@ fun HomeScreenGeneralInfo(
     windSpeed: Int,
     humidity: Int,
 ) {
-    Log.d("TAG", "url: ${iconUrl.replace("//", "")}")
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(iconUrl.replace("//", ""))
+                .data("https:$iconUrl")
                 .crossfade(true)
                 .build(),
             contentDescription = null,
@@ -228,6 +261,151 @@ fun HomeScreenGeneralInfoValueBlock(
             color = MaterialTheme.colors.primary,
             fontSize = 20.sp
         )
+    }
+}
+
+@Composable
+fun <T> HomeScreenForecast(
+    list: List<T>,
+    primaryText: String,
+    secondaryText: @Composable () -> Unit,
+    itemContent: @Composable (item: T) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp, 8.dp)
+        ) {
+            Text(
+                text = primaryText,
+                fontSize = 24.sp,
+                color = MaterialTheme.colors.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            )
+            secondaryText()
+        }
+    }
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        items(list) { entity -> itemContent(entity) }
+    }
+}
+
+@Composable
+fun HomeScreenForecastHourly(
+    iconUrl: String,
+    time: String,
+    temperature: Int,
+    isActive: Boolean = true,
+) {
+    val unitStyle = SpanStyle(
+        baselineShift = BaselineShift.Superscript,
+        fontSize = 14.sp
+    )
+
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .background(
+                color = MaterialTheme.colors.inactiveBackground,
+                shape = MaterialTheme.shapes.medium
+            )
+            .activeBackground(isActive)
+            .padding(20.dp, 16.dp)
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("https:$iconUrl")
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            modifier = Modifier.size(50.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = time,
+                color = MaterialTheme.colors.primary,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = buildAnnotatedString {
+                    append(temperature.toString())
+                    withStyle(unitStyle) {
+                        append(stringResource(id = R.string.home_celsius))
+                    }
+                },
+                color = MaterialTheme.colors.primary,
+                fontSize = 26.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun HomeScreenForecastDaily(
+    iconUrl: String,
+    date: String,
+    temperature: Int,
+    isActive: Boolean = true,
+) {
+    val unitStyle = SpanStyle(
+        baselineShift = BaselineShift.Superscript,
+        fontSize = 14.sp
+    )
+
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .background(
+                color = MaterialTheme.colors.inactiveBackground,
+                shape = MaterialTheme.shapes.medium
+            )
+            .activeBackground(isActive)
+            .padding(20.dp, 16.dp)
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("https:$iconUrl")
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            modifier = Modifier.size(50.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = date,
+                color = MaterialTheme.colors.primary,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = buildAnnotatedString {
+                    append(temperature.toString())
+                    withStyle(unitStyle) {
+                        append(stringResource(id = R.string.home_celsius))
+                    }
+                },
+                color = MaterialTheme.colors.primary,
+                fontSize = 26.sp
+            )
+        }
     }
 }
 

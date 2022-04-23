@@ -8,7 +8,6 @@
     <string name="app_unit_mile">mph</string>
     <string name="app_value_no_space" translatable="false">%d%s</string>
     <string name="app_value_with_space" translatable="false">%d %s</string>
-    <string name="app_today">Today</string>
 
     <string name="home_pressure">Pressure</string>
     <string name="home_today">Today</string>
@@ -22,6 +21,8 @@
     <string name="home_humidity_value">%d%%</string>
     <string name="home_celsius">\u00B0C</string>
     <string name="home_view_full">View full report</string>
+    <string name="home_forecast_daily">Daily forecast</string>
+    <string name="home_forecast_hourly">Hourly forecast</string>
 
     <string name="search_title">Pick location</string>
     <string name="search_description">Find the area or city that you want to know the weather info at this time</string>

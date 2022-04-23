@@ -12,6 +12,8 @@ import com.emikhalets.simpleweather.ui.screens.base.entity.HomeCurrentEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,12 +60,13 @@ class HomeViewModel @Inject constructor(
 
         return response.forecast.forecastDay.map { fDay ->
             if (fDay.day?.condition?.icon != null &&
-                fDay.date != null &&
+                fDay.date_epoch != null &&
                 fDay.day.avgtemp_c != null
             ) {
                 DailyForecastEntity(
                     iconUrl = fDay.day.condition.icon,
-                    date = fDay.date,
+                    date = SimpleDateFormat("dd MMM, yyyy", Locale.getDefault())
+                        .format(fDay.date_epoch),
                     temperature = fDay.day.avgtemp_c.toInt()
                 )
             } else {
@@ -87,7 +90,7 @@ class HomeViewModel @Inject constructor(
                 ) {
                     HourlyForecastEntity(
                         iconUrl = hour.condition.icon,
-                        time = hour.time,
+                        time = hour.time.split(" ")[1],
                         temperature = hour.temp_c.toInt()
                     )
                 } else {
