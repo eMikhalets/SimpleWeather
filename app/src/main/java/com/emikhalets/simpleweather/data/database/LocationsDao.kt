@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface LocationsDao {
@@ -13,6 +14,9 @@ interface LocationsDao {
 
     @Delete
     suspend fun delete(item: SearchDBEntity): Int
+
+    @Update
+    suspend fun update(item: SearchDBEntity): Int
 
     @Query("SELECT * FROM locations WHERE name LIKE '%' || :name || '%'")
     suspend fun searchByName(name: String): List<SearchDBEntity>
