@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.data.remote.entity.ForecastWeatherResponse
 import com.emikhalets.simpleweather.data.repository.DatabaseRepository
 import com.emikhalets.simpleweather.data.repository.WeatherRepository
+import com.emikhalets.simpleweather.utils.UiString
 import com.emikhalets.simpleweather.utils.mappers.ForecastWeatherMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -27,7 +29,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             remoteRepo.getWeather("London")
                 .onSuccess { handleSuccessWeatherResponse(it) }
-                .onFailure { handleFailureWeatherResponse(it) }
+                .onFailure { handleFailureResponse(it) }
 
         }
     }
@@ -40,9 +42,12 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    private fun handleFailureWeatherResponse(throwable: Throwable) {
+    private fun handleFailureResponse(throwable: Throwable) {
+        val message = throwable.message?.let { str -> UiString.DynamicString(str) }
+            ?: UiString.ResourceString(R.string.database_unexpected_error)
+
         state = state.copy(
-            error = throwable.message ?: ""
+            error = message
         )
     }
 }

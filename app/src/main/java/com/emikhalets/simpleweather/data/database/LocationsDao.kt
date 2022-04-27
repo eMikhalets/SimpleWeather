@@ -18,6 +18,6 @@ interface LocationsDao {
     @Update
     suspend fun update(item: SearchDBEntity): Int
 
-    @Query("SELECT * FROM locations WHERE name LIKE '%' || :name || '%'")
-    suspend fun searchByName(name: String): List<SearchDBEntity>
+    @Query("SELECT * FROM locations")
+    suspend fun getAll(): List<SearchDBEntity>
 }

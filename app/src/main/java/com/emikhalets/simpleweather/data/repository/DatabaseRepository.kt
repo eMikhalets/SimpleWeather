@@ -10,5 +10,5 @@ interface DatabaseRepository {
 
     suspend fun updateLocation(entity: SearchDBEntity): Result<Int>
 
-    suspend fun searchByName(query: String): Result<List<SearchDBEntity>>
+    suspend fun getAll(): Result<List<SearchDBEntity>>
 }

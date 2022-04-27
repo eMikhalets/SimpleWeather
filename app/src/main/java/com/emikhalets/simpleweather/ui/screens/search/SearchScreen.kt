@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emikhalets.simpleweather.R
+import com.emikhalets.simpleweather.data.database.SearchDBEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.ui.theme.textFieldBackground
@@ -66,7 +67,7 @@ fun SearchScreen() {
 @Composable
 fun SearchScreen(
     searchQuery: String,
-    locationList: List<SearchEntity>,
+    locationList: List<SearchDBEntity>,
     selectedPos: Int,
     onSearchQueryChange: (String) -> Unit,
     onSelectPosChange: (Int) -> Unit,
@@ -177,7 +178,7 @@ fun SearchScreenHeader(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchScreenResultGrid(
-    locationList: List<SearchEntity>,
+    locationList: List<SearchDBEntity>,
     selectedPos: Int,
     onSelectPosChange: (Int) -> Unit,
 ) {

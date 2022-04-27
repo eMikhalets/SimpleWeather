@@ -1,8 +1,8 @@
 package com.emikhalets.simpleweather.utils
 
+import com.emikhalets.simpleweather.data.database.SearchDBEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
-import com.emikhalets.simpleweather.ui.screens.search.SearchEntity
 
 fun previewHomeScreenDailyForecast(): List<DailyForecastEntity> {
     return listOf(
@@ -24,11 +24,11 @@ fun previewHomeScreenHourlyForecast(): List<HourlyForecastEntity> {
     )
 }
 
-fun previewSearchScreenLocationList(): List<SearchEntity> {
+fun previewSearchScreenLocationList(): List<SearchDBEntity> {
     return listOf(
-        SearchEntity("London", "London", "UK"),
-        SearchEntity("London", "London", "UK"),
-        SearchEntity("London", "London", "UK"),
-        SearchEntity("London", "London", "UK"),
+        SearchDBEntity(0, "London", "London", "UK", 0.0, 0.0),
+        SearchDBEntity(0, "London", "London", "UK", 0.0, 0.0),
+        SearchDBEntity(0, "London", "London", "UK", 0.0, 0.0),
+        SearchDBEntity(0, "London", "London", "UK", 0.0, 0.0),
     )
 }

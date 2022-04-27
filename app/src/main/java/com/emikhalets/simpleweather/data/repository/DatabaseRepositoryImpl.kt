@@ -20,7 +20,7 @@ class DatabaseRepositoryImpl @Inject constructor(
         return runCatching { locationDao.update(entity) }
     }
 
-    override suspend fun searchByName(query: String): Result<List<SearchDBEntity>> {
-        return runCatching { locationDao.searchByName(query) }
+    override suspend fun getAll(): Result<List<SearchDBEntity>> {
+        return runCatching { locationDao.getAll() }
     }
 }
