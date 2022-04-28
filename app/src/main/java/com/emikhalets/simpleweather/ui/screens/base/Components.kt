@@ -15,7 +15,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.emikhalets.simpleweather.ui.theme.surfaceBottom
-import com.emikhalets.simpleweather.utils.appSurface
+import com.emikhalets.simpleweather.utils.extensions.appSurface
 
 @Composable
 fun AppScaffold(navController: NavHostController, content: @Composable () -> Unit) {

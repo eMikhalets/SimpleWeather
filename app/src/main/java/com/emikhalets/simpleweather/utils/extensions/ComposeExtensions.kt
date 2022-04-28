@@ -1,4 +1,4 @@
-package com.emikhalets.simpleweather.utils
+package com.emikhalets.simpleweather.utils.extensions
 
 import androidx.compose.foundation.background
 import androidx.compose.material.MaterialTheme

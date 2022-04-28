@@ -27,6 +27,7 @@
     <string name="search_title">Pick location</string>
     <string name="search_description">Find the area or city that you want to know the weather info at this time</string>
     <string name="search_location_hint">Search</string>
+    <string name="search_no_location_by_num_error">Failed to get location on number %d</string>
 
     <string name="database_insert_error">Error when adding new location</string>
     <string name="database_delete_error">Error when deleting location</string>

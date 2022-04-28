@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,21 +47,42 @@ import com.emikhalets.simpleweather.data.database.SearchDBEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.ui.theme.textFieldBackground
-import com.emikhalets.simpleweather.utils.activeBackground
-import com.emikhalets.simpleweather.utils.appSurface
-import com.emikhalets.simpleweather.utils.previewSearchScreenLocationList
+import com.emikhalets.simpleweather.utils.extensions.activeBackground
+import com.emikhalets.simpleweather.utils.extensions.appSurface
+import com.emikhalets.simpleweather.utils.extensions.previewSearchScreenLocationList
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(viewModel: SearchViewModel) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedPos by remember { mutableStateOf(-1) }
+    var searchingState by remember { mutableStateOf(false) }
+
+    val state = viewModel.state
+
+    LaunchedEffect("") {
+        viewModel.getLocations()
+    }
 
     SearchScreen(
         searchQuery = searchQuery,
-        locationList = emptyList(),
+        locationList = state.locations,
         selectedPos = selectedPos,
-        onSearchQueryChange = { newQuery -> searchQuery = newQuery },
-        onSelectPosChange = { newPos -> selectedPos = newPos }
+        onSearchQueryChange = { newQuery ->
+            searchQuery = newQuery
+            searchingState = searchQuery.isNotEmpty()
+            viewModel.getLocations(searchQuery)
+        },
+        onSelectPosChange = { newPos ->
+            if (selectedPos == newPos) {
+                if (searchingState) {
+                    viewModel.addLocation(selectedPos)
+                    searchingState = false
+                } else {
+                    viewModel.saveLocationPref(selectedPos)
+                }
+            }
+            selectedPos = newPos
+        }
     )
 }
 

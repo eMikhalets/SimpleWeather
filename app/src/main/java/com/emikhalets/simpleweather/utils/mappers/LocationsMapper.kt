@@ -10,6 +10,7 @@ object LocationsMapper {
     suspend fun mapRemoteLocations(locations: List<SearchData>): List<SearchDBEntity> {
         return withContext(Dispatchers.IO) {
             locations.map { location ->
+                location.id ?: return@withContext emptyList()
                 location.name ?: return@withContext emptyList()
                 location.region ?: return@withContext emptyList()
                 location.country ?: return@withContext emptyList()
@@ -17,6 +18,7 @@ object LocationsMapper {
                 location.longitude ?: return@withContext emptyList()
 
                 SearchDBEntity(
+                    id = location.id,
                     name = location.name,
                     region = location.region,
                     country = location.country,

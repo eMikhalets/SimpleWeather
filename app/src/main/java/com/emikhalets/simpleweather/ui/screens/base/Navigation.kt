@@ -11,7 +11,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.emikhalets.simpleweather.ui.screens.home.HomeScreen
-import com.emikhalets.simpleweather.ui.screens.home.HomeViewModel
 import com.emikhalets.simpleweather.ui.screens.search.SearchScreen
 import com.emikhalets.simpleweather.ui.screens.settings.SettingsScreen
 
@@ -28,7 +27,7 @@ fun AppNavHost(navController: NavHostController) {
             HomeScreen(viewModel = hiltViewModel())
         }
         composable(AppScreen.Search.route) {
-            SearchScreen()
+            SearchScreen(viewModel = hiltViewModel())
         }
         composable(AppScreen.Settings.route) {
             SettingsScreen()

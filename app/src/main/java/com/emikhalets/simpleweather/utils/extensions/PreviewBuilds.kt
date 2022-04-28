@@ -1,4 +1,4 @@
-package com.emikhalets.simpleweather.utils
+package com.emikhalets.simpleweather.utils.extensions
 
 import com.emikhalets.simpleweather.data.database.SearchDBEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity

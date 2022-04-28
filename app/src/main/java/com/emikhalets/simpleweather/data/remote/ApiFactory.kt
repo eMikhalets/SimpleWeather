@@ -1,6 +1,6 @@
 package com.emikhalets.simpleweather.data.remote
 
-import com.emikhalets.simpleweather.utils.tempApiKey
+import com.emikhalets.simpleweather.utils.extensions.tempApiKey
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor

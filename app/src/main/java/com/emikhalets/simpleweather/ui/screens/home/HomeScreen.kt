@@ -46,11 +46,11 @@ import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
-import com.emikhalets.simpleweather.utils.activeBackground
-import com.emikhalets.simpleweather.utils.activeTextColor
-import com.emikhalets.simpleweather.utils.appSurface
-import com.emikhalets.simpleweather.utils.previewHomeScreenDailyForecast
-import com.emikhalets.simpleweather.utils.previewHomeScreenHourlyForecast
+import com.emikhalets.simpleweather.utils.extensions.activeBackground
+import com.emikhalets.simpleweather.utils.extensions.activeTextColor
+import com.emikhalets.simpleweather.utils.extensions.appSurface
+import com.emikhalets.simpleweather.utils.extensions.previewHomeScreenDailyForecast
+import com.emikhalets.simpleweather.utils.extensions.previewHomeScreenHourlyForecast
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {

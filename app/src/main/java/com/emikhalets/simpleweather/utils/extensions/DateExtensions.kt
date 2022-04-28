@@ -1,4 +1,4 @@
-package com.emikhalets.simpleweather.utils
+package com.emikhalets.simpleweather.utils.extensions
 
 import java.text.SimpleDateFormat
 import java.util.*
