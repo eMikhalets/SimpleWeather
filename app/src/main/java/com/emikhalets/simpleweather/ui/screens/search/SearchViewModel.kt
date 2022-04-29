@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val remoteRepo: WeatherRepository,
-    private val databaseRepo: DatabaseRepository
+    private val databaseRepo: DatabaseRepository,
 ) : ViewModel() {
 
     var state by mutableStateOf(SearchScreenState())
@@ -58,7 +58,9 @@ class SearchViewModel @Inject constructor(
     fun addLocation(index: Int) {
         viewModelScope.launch {
             try {
-                databaseRepo.insertLocation(state.locations[index])
+                val entity = state.locations[index]
+                App.prefs?.putCurrentLocation(entity.coords)
+                databaseRepo.insertLocation(entity)
                     .onSuccess { handleSuccessAddLocationResponse(it) }
                     .onFailure { handleFailureResponse(it) }
             } catch (indexEx: IndexOutOfBoundsException) {

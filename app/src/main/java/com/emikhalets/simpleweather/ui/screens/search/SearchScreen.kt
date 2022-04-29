@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,11 +62,14 @@ import com.emikhalets.simpleweather.utils.locationSettings
 import com.emikhalets.simpleweather.utils.requestLocationPermissions
 import com.emikhalets.simpleweather.utils.requestLocationSettings
 
+// TODO: header scroll
+//  color changing animations
+// FIXME: odd locations count empty place background
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
     scaffoldState: ScaffoldState,
-    locationHelper: LocationHelper?
+    locationHelper: LocationHelper?,
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedPos by remember { mutableStateOf(-1) }
@@ -142,6 +146,7 @@ fun SearchScreen(
         modifier = Modifier
             .fillMaxSize()
             .appSurface()
+            .verticalScroll(rememberScrollState())
     ) {
         SearchScreenHeader(
             searchQuery = searchQuery,
@@ -205,6 +210,7 @@ fun SearchScreenHeader(
                         contentDescription = null
                     )
                 },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = MaterialTheme.colors.primary,
                     focusedIndicatorColor = Color.Transparent,
@@ -248,43 +254,87 @@ fun SearchScreenResultGrid(
     selectedPos: Int,
     onSelectPosChange: (Int) -> Unit,
 ) {
-    LazyVerticalGrid(
-        cells = GridCells.Fixed(2),
-        modifier = Modifier.padding(horizontal = 8.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 8.dp)
     ) {
-        itemsIndexed(locationList) { index, entity ->
-            Column(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colors.inactiveBackground,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .activeBackground(index == selectedPos)
-                    .padding(16.dp, 8.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { onSelectPosChange(index) }
+        for (i in locationList.indices step 2) {
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min)
             ) {
-                Text(
-                    text = entity.name,
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 24.sp
+                SearchScreenLocationItem(
+                    index = i,
+                    entity = locationList[i],
+                    isActive = selectedPos == i,
+                    onSelectPosChange = onSelectPosChange,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f)
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = entity.region,
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 16.sp
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = entity.country,
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 20.sp
-                )
+                if (locationList.size % 2 == 0) {
+                    SearchScreenLocationItem(
+                        index = i + 1,
+                        entity = locationList[i + 1],
+                        isActive = selectedPos == i + 1,
+                        onSelectPosChange = onSelectPosChange,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                    )
+                } else {
+                    SearchScreenLocationItem(
+                        index = -1,
+                        entity = SearchDBEntity(),
+                        isActive = false,
+                        onSelectPosChange = {},
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                    )
+                }
             }
         }
+    }
+}
+
+@Composable
+fun SearchScreenLocationItem(
+    index: Int,
+    entity: SearchDBEntity,
+    isActive: Boolean,
+    onSelectPosChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .padding(8.dp)
+            .background(
+                color = MaterialTheme.colors.inactiveBackground,
+                shape = MaterialTheme.shapes.medium
+            )
+            .activeBackground(isActive)
+            .padding(16.dp, 8.dp)
+            .clip(MaterialTheme.shapes.medium)
+            .clickable { onSelectPosChange(index) }
+    ) {
+        Text(
+            text = entity.name,
+            color = MaterialTheme.colors.primary,
+            fontSize = 24.sp
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = entity.region,
+            color = MaterialTheme.colors.primary,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = entity.country,
+            color = MaterialTheme.colors.primary,
+            fontSize = 20.sp
+        )
     }
 }
 

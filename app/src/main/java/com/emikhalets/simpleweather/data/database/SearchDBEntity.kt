@@ -14,6 +14,8 @@ data class SearchDBEntity(
     @ColumnInfo(name = "longitude") val longitude: Double,
 ) {
 
+    constructor() : this(-1, "", "", "", 0.0, 0.0)
+
     val coords: String
         get() = "$latitude, $longitude"
 }

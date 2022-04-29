@@ -57,6 +57,8 @@ import com.emikhalets.simpleweather.utils.extensions.previewHomeScreenDailyForec
 import com.emikhalets.simpleweather.utils.extensions.previewHomeScreenHourlyForecast
 import com.emikhalets.simpleweather.utils.extensions.showSnackBar
 
+// FIXME: daily forecast date format
+//  select current day and time in forecast
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
