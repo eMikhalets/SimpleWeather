@@ -9,6 +9,8 @@
     <string name="app_value_no_space" translatable="false">%d%s</string>
     <string name="app_value_with_space" translatable="false">%d %s</string>
 
+    <string name="prefs_no_saved_location">No saved location, go to search tab</string>
+
     <string name="location_need_turn_on_gps">You need to enable geolocation on your phone</string>
     <string name="location_current_error">Error while determining current location</string>
     <string name="location_no_permissions">Location permissions not granted</string>
@@ -27,6 +29,7 @@
     <string name="home_view_full">View full report</string>
     <string name="home_forecast_daily">Daily forecast</string>
     <string name="home_forecast_hourly">Hourly forecast</string>
+    <string name="home_no_data">To display weather data, use the search or allow to determine the current location</string>
 
     <string name="search_title">Pick location</string>
     <string name="search_description">Find the area or city that you want to know the weather info at this time</string>

@@ -26,11 +26,14 @@ sealed class AppScreen(val route: String, val icon: ImageVector) {
 fun AppNavHost(
     navController: NavHostController,
     scaffoldState: ScaffoldState,
-    locationHelper: LocationHelper
+    locationHelper: LocationHelper?
 ) {
     NavHost(navController, AppScreen.Home.route) {
         composable(AppScreen.Home.route) {
-            HomeScreen(viewModel = hiltViewModel())
+            HomeScreen(
+                viewModel = hiltViewModel(),
+                scaffoldState = scaffoldState,
+            )
         }
         composable(AppScreen.Search.route) {
             SearchScreen(

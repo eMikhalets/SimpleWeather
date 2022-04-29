@@ -2,7 +2,19 @@ package com.emikhalets.simpleweather.utils.extensions
 
 import com.emikhalets.simpleweather.data.database.SearchDBEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
+import com.emikhalets.simpleweather.ui.screens.base.entity.HomeCurrentEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
+
+fun previewHomeScreenCurrent(): HomeCurrentEntity {
+    return HomeCurrentEntity(
+        location = "San Fransisco",
+        date = "May 28, 2021",
+        iconUrl = "",
+        temperature = 28,
+        windSpeed = 10,
+        humidity = 75
+    )
+}
 
 fun previewHomeScreenDailyForecast(): List<DailyForecastEntity> {
     return listOf(

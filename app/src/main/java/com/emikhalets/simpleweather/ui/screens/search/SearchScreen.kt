@@ -65,7 +65,7 @@ import com.emikhalets.simpleweather.utils.requestLocationSettings
 fun SearchScreen(
     viewModel: SearchViewModel,
     scaffoldState: ScaffoldState,
-    locationHelper: LocationHelper
+    locationHelper: LocationHelper?
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedPos by remember { mutableStateOf(-1) }
@@ -74,7 +74,7 @@ fun SearchScreen(
     val state = viewModel.state
     val context = LocalContext.current
 
-    fun currentLocation() = locationHelper.getCurrentLocation(
+    fun currentLocation() = locationHelper?.getCurrentLocation(
         onSuccess = { location ->
             prefs?.putCurrentLocation(location.coords)
             viewModel.addLocation(location.latitude, location.longitude)
@@ -99,19 +99,15 @@ fun SearchScreen(
         onDisabled = { scaffoldState.showSnackBar(context, R.string.location_no_permissions) }
     )
 
-    LaunchedEffect("") {
-        viewModel.getLocations()
-    }
-
-    LaunchedEffect(state.error) {
-        scaffoldState.showSnackBar(state.error.asString(context))
-    }
+    LaunchedEffect("") { viewModel.getLocations() }
+    LaunchedEffect(state.error) { scaffoldState.showSnackBar(state.error.asString(context)) }
 
     SearchScreen(
         searchQuery = searchQuery,
         locationList = state.locations,
         selectedPos = selectedPos,
         onSearchQueryChange = { newQuery ->
+            selectedPos = -1
             searchQuery = newQuery
             searchingState = searchQuery.isNotEmpty()
             viewModel.getLocations(searchQuery)

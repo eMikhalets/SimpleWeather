@@ -70,6 +70,7 @@ class SearchViewModel @Inject constructor(
 
     fun addLocation(latitude: Double, longitude: Double) {
         viewModelScope.launch {
+            // TODO: get location name and country
             val entity = SearchDBEntity(
                 id = 1,
                 name = "My location",

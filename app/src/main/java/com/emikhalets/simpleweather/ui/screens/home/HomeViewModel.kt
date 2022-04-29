@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.emikhalets.simpleweather.App.Companion.prefs
 import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.data.remote.entity.ForecastWeatherResponse
 import com.emikhalets.simpleweather.data.repository.DatabaseRepository
@@ -24,13 +25,18 @@ class HomeViewModel @Inject constructor(
     var state by mutableStateOf(HomeScreenState())
         private set
 
-    // TODO: define query
     fun getWeather() {
         viewModelScope.launch {
-            remoteRepo.getWeather("London")
-                .onSuccess { handleSuccessWeatherResponse(it) }
-                .onFailure { handleFailureResponse(it) }
-
+            val location = prefs?.getCurrentLocation()
+            if (!location.isNullOrEmpty()) {
+                remoteRepo.getWeather(location)
+                    .onSuccess { handleSuccessWeatherResponse(it) }
+                    .onFailure { handleFailureResponse(it) }
+            } else {
+                state = state.copy(
+                    error = UiString.ResourceString(R.string.prefs_no_saved_location)
+                )
+            }
         }
     }
 

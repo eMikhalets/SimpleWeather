@@ -35,6 +35,7 @@ fun AppScaffold(
     )
 }
 
+// TODO: remove click effect
 @Composable
 private fun AppBottomBar(navController: NavHostController) {
     val screens = listOf(

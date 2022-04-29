@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,32 +45,31 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
+import com.emikhalets.simpleweather.ui.screens.base.entity.HomeCurrentEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.utils.extensions.activeBackground
 import com.emikhalets.simpleweather.utils.extensions.activeTextColor
 import com.emikhalets.simpleweather.utils.extensions.appSurface
+import com.emikhalets.simpleweather.utils.extensions.previewHomeScreenCurrent
 import com.emikhalets.simpleweather.utils.extensions.previewHomeScreenDailyForecast
 import com.emikhalets.simpleweather.utils.extensions.previewHomeScreenHourlyForecast
+import com.emikhalets.simpleweather.utils.extensions.showSnackBar
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    scaffoldState: ScaffoldState,
+) {
     val state = viewModel.state
+    val context = LocalContext.current
 
-    LaunchedEffect("") {
-        viewModel.getWeather()
-    }
-
-    state.current ?: return
+    LaunchedEffect("") { viewModel.getWeather() }
+    LaunchedEffect(state.error) { scaffoldState.showSnackBar(state.error.asString(context)) }
 
     HomeScreen(
-        cityName = state.current.location,
-        date = state.current.date,
-        iconUrl = state.current.iconUrl,
-        temperature = state.current.temperature,
-        windSpeed = state.current.windSpeed,
-        humidity = state.current.humidity,
+        current = state.current,
         dailyForecast = state.daily,
         hourlyForecast = state.hourly,
     )
@@ -76,12 +77,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
 @Composable
 fun HomeScreen(
-    cityName: String,
-    date: String,
-    iconUrl: String,
-    temperature: Int,
-    windSpeed: Int,
-    humidity: Int,
+    current: HomeCurrentEntity?,
     dailyForecast: List<DailyForecastEntity>,
     hourlyForecast: List<HourlyForecastEntity>,
 ) {
@@ -91,60 +87,70 @@ fun HomeScreen(
             .appSurface()
             .verticalScroll(rememberScrollState())
     ) {
-        HomeScreenHeader(
-            cityName = cityName,
-            date = date,
-        )
-        HomeScreenGeneralInfo(
-            iconUrl = iconUrl,
-            temperature = temperature,
-            windSpeed = windSpeed,
-            humidity = humidity
-        )
-        HomeScreenForecast(
-            list = dailyForecast,
-            primaryText = stringResource(id = R.string.home_forecast_daily),
-            secondaryText = {
-                Text(
-                    text = stringResource(id = R.string.home_view_full),
-                    color = Color.Blue
-                )
-            },
-            itemContent = { entity ->
-                HomeScreenForecastDaily(
-                    iconUrl = entity.iconUrl,
-                    date = entity.date,
-                    temperature = entity.temperature,
-                    isActive = false,
-                )
-            }
-        )
-        HomeScreenForecast(
-            list = hourlyForecast,
-            primaryText = stringResource(id = R.string.home_forecast_hourly),
-            secondaryText = {
-                Text(
-                    text = stringResource(id = R.string.home_view_full),
-                    color = Color.Blue
-                )
-            },
-            itemContent = { entity ->
-                HomeScreenForecastHourly(
-                    iconUrl = entity.iconUrl,
-                    time = entity.time,
-                    temperature = entity.temperature,
-                    isActive = false,
-                )
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        if (current == null) {
+            Spacer(modifier = Modifier.height(52.dp))
+            Text(
+                text = stringResource(id = R.string.home_no_data),
+                color = MaterialTheme.colors.primary,
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+        } else {
+            HomeScreenHeader(
+                cityName = current.location,
+                date = current.date
+            )
+            HomeScreenGeneralInfo(
+                iconUrl = current.iconUrl,
+                temperature = current.temperature,
+                windSpeed = current.windSpeed,
+                humidity = current.humidity
+            )
+            HomeScreenForecast(
+                list = dailyForecast,
+                primaryText = stringResource(id = R.string.home_forecast_daily),
+                secondaryText = {
+                    Text(
+                        text = stringResource(id = R.string.home_view_full),
+                        color = Color.Blue
+                    )
+                },
+                itemContent = { entity ->
+                    HomeScreenForecastDaily(
+                        iconUrl = entity.iconUrl,
+                        date = entity.date,
+                        temperature = entity.temperature,
+                        isActive = false,
+                    )
+                }
+            )
+            HomeScreenForecast(
+                list = hourlyForecast,
+                primaryText = stringResource(id = R.string.home_forecast_hourly),
+                secondaryText = {
+                    Text(
+                        text = stringResource(id = R.string.home_view_full),
+                        color = Color.Blue
+                    )
+                },
+                itemContent = { entity ->
+                    HomeScreenForecastHourly(
+                        iconUrl = entity.iconUrl,
+                        time = entity.time,
+                        temperature = entity.temperature,
+                        isActive = false,
+                    )
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
 @Composable
 fun HomeScreenHeader(
     cityName: String,
-    date: String
+    date: String,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -245,7 +251,7 @@ fun HomeScreenGeneralInfo(
 @Composable
 fun HomeScreenGeneralInfoValueBlock(
     title: String,
-    value: String
+    value: String,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -269,7 +275,7 @@ fun <T> HomeScreenForecast(
     list: List<T>,
     primaryText: String,
     secondaryText: @Composable () -> Unit,
-    itemContent: @Composable (item: T) -> Unit
+    itemContent: @Composable (item: T) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -414,12 +420,7 @@ fun HomeScreenForecastDaily(
 fun HomeScreenPreview() {
     AppTheme {
         HomeScreen(
-            cityName = "San Fransisco",
-            date = "May 28, 2021",
-            iconUrl = "",
-            temperature = 28,
-            windSpeed = 10,
-            humidity = 75,
+            current = previewHomeScreenCurrent(),
             dailyForecast = previewHomeScreenDailyForecast(),
             hourlyForecast = previewHomeScreenHourlyForecast(),
         )

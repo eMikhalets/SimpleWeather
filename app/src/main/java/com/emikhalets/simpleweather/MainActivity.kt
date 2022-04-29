@@ -17,16 +17,21 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val locationHelper = LocationHelper(this)
+    private var locationHelper: LocationHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent { Application(locationHelper) }
     }
+
+    override fun onStart() {
+        super.onStart()
+        locationHelper = LocationHelper(this)
+    }
 }
 
 @Composable
-fun Application(locationHelper: LocationHelper) {
+fun Application(locationHelper: LocationHelper?) {
     val navHost = rememberNavController()
     val scaffoldState = rememberScaffoldState()
 
