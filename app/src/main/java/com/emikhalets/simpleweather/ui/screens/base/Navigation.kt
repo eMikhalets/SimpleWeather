@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import com.emikhalets.simpleweather.ui.screens.home.HomeScreen
 import com.emikhalets.simpleweather.ui.screens.search.SearchScreen
 import com.emikhalets.simpleweather.ui.screens.settings.SettingsScreen
+import com.emikhalets.simpleweather.utils.LocationHelper
 
 sealed class AppScreen(val route: String, val icon: ImageVector) {
     object Home : AppScreen("home", Icons.Default.Home)
@@ -21,13 +22,19 @@ sealed class AppScreen(val route: String, val icon: ImageVector) {
 }
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(
+    navController: NavHostController,
+    locationHelper: LocationHelper
+) {
     NavHost(navController, AppScreen.Home.route) {
         composable(AppScreen.Home.route) {
             HomeScreen(viewModel = hiltViewModel())
         }
         composable(AppScreen.Search.route) {
-            SearchScreen(viewModel = hiltViewModel())
+            SearchScreen(
+                viewModel = hiltViewModel(),
+                locationHelper = locationHelper
+            )
         }
         composable(AppScreen.Settings.route) {
             SettingsScreen()

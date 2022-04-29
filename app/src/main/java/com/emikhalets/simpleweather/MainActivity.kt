@@ -4,31 +4,36 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.emikhalets.simpleweather.ui.screens.base.AppNavHost
 import com.emikhalets.simpleweather.ui.screens.base.AppScaffold
 import com.emikhalets.simpleweather.ui.theme.AppTheme
+import com.emikhalets.simpleweather.utils.LocationHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val locationHelper = LocationHelper(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Application()
+            Application(locationHelper)
         }
     }
 }
 
 @Composable
-fun Application() {
+fun Application(locationHelper: LocationHelper) {
     val navHost = rememberNavController()
 
     AppTheme {
         AppScaffold(navHost) {
-            AppNavHost(navHost)
+            AppNavHost(navHost, locationHelper)
         }
     }
 }
@@ -36,5 +41,5 @@ fun Application() {
 @Preview(showBackground = true)
 @Composable
 fun ApplicationPreview() {
-    Application()
+    Application(locationHelper = LocationHelper(LocalContext.current))
 }

@@ -36,28 +36,76 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.emikhalets.simpleweather.App.Companion.prefs
 import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.data.database.SearchDBEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.ui.theme.textFieldBackground
+import com.emikhalets.simpleweather.utils.LocationHelper
 import com.emikhalets.simpleweather.utils.extensions.activeBackground
 import com.emikhalets.simpleweather.utils.extensions.appSurface
+import com.emikhalets.simpleweather.utils.extensions.coords
 import com.emikhalets.simpleweather.utils.extensions.previewSearchScreenLocationList
+import com.emikhalets.simpleweather.utils.locationPermission
+import com.emikhalets.simpleweather.utils.locationSettings
+import com.emikhalets.simpleweather.utils.requestLocationPermissions
+import com.emikhalets.simpleweather.utils.requestLocationSettings
 
 @Composable
-fun SearchScreen(viewModel: SearchViewModel) {
+fun SearchScreen(
+    viewModel: SearchViewModel,
+    locationHelper: LocationHelper
+) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedPos by remember { mutableStateOf(-1) }
     var searchingState by remember { mutableStateOf(false) }
 
     val state = viewModel.state
+    val context = LocalContext.current
+
+    val locationSettings = locationSettings(
+        onEnabled = {
+            locationHelper.getCurrentLocation(
+                onSuccess = { location ->
+                    prefs?.putCurrentLocation(location.coords)
+                    viewModel.getLocations()
+                    selectedPos = 0
+                },
+                onFailure = { /* TODO: show message */ }
+            )
+        },
+        onDisabled = { /* TODO: show message */ }
+    )
+
+    val locationPermission = locationPermission(
+        onEnabled = {
+            LocationHelper.checkLocationSettings(
+                context = context,
+                onEnabled = {
+                    locationHelper.getCurrentLocation(
+                        onSuccess = { location ->
+                            prefs?.putCurrentLocation(location.coords)
+                            viewModel.getLocations()
+                            selectedPos = 0
+                        },
+                        onFailure = { /* TODO: show message */ }
+                    )
+                },
+                onDisabled = { intentSenderRequest ->
+                    locationSettings.requestLocationSettings(intentSenderRequest)
+                }
+            )
+        },
+        onDisabled = { /* TODO: show message */ }
+    )
 
     LaunchedEffect("") {
         viewModel.getLocations()
@@ -82,6 +130,9 @@ fun SearchScreen(viewModel: SearchViewModel) {
                 }
             }
             selectedPos = newPos
+        },
+        onLocationClick = {
+            locationPermission.requestLocationPermissions()
         }
     )
 }
@@ -93,6 +144,7 @@ fun SearchScreen(
     selectedPos: Int,
     onSearchQueryChange: (String) -> Unit,
     onSelectPosChange: (Int) -> Unit,
+    onLocationClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -102,7 +154,7 @@ fun SearchScreen(
         SearchScreenHeader(
             searchQuery = searchQuery,
             onSearchQueryChange = onSearchQueryChange,
-            onLocationClick = { /*TODO*/ }
+            onLocationClick = onLocationClick
         )
         SearchScreenResultGrid(
             locationList = locationList,
@@ -254,6 +306,7 @@ fun SearchScreenPreview() {
             selectedPos = 0,
             onSearchQueryChange = {},
             onSelectPosChange = {},
+            onLocationClick = {},
         )
     }
 }
