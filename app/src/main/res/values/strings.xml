@@ -9,6 +9,10 @@
     <string name="app_value_no_space" translatable="false">%d%s</string>
     <string name="app_value_with_space" translatable="false">%d %s</string>
 
+    <string name="location_need_turn_on_gps">You need to enable geolocation on your phone</string>
+    <string name="location_current_error">Error while determining current location</string>
+    <string name="location_no_permissions">Location permissions not granted</string>
+
     <string name="home_pressure">Pressure</string>
     <string name="home_today">Today</string>
     <string name="home_forecast">Forecast</string>

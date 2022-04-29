@@ -1,5 +1,6 @@
 package com.emikhalets.simpleweather.ui.screens.base
 
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
@@ -24,6 +25,7 @@ sealed class AppScreen(val route: String, val icon: ImageVector) {
 @Composable
 fun AppNavHost(
     navController: NavHostController,
+    scaffoldState: ScaffoldState,
     locationHelper: LocationHelper
 ) {
     NavHost(navController, AppScreen.Home.route) {
@@ -33,6 +35,7 @@ fun AppNavHost(
         composable(AppScreen.Search.route) {
             SearchScreen(
                 viewModel = hiltViewModel(),
+                scaffoldState = scaffoldState,
                 locationHelper = locationHelper
             )
         }

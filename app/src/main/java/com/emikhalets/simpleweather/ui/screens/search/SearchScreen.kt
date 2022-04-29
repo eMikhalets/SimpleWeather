@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -54,6 +55,7 @@ import com.emikhalets.simpleweather.utils.extensions.activeBackground
 import com.emikhalets.simpleweather.utils.extensions.appSurface
 import com.emikhalets.simpleweather.utils.extensions.coords
 import com.emikhalets.simpleweather.utils.extensions.previewSearchScreenLocationList
+import com.emikhalets.simpleweather.utils.extensions.showSnackBar
 import com.emikhalets.simpleweather.utils.locationPermission
 import com.emikhalets.simpleweather.utils.locationSettings
 import com.emikhalets.simpleweather.utils.requestLocationPermissions
@@ -62,6 +64,7 @@ import com.emikhalets.simpleweather.utils.requestLocationSettings
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
+    scaffoldState: ScaffoldState,
     locationHelper: LocationHelper
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -71,44 +74,37 @@ fun SearchScreen(
     val state = viewModel.state
     val context = LocalContext.current
 
-    val locationSettings = locationSettings(
-        onEnabled = {
-            locationHelper.getCurrentLocation(
-                onSuccess = { location ->
-                    prefs?.putCurrentLocation(location.coords)
-                    viewModel.getLocations()
-                    selectedPos = 0
-                },
-                onFailure = { /* TODO: show message */ }
-            )
+    fun currentLocation() = locationHelper.getCurrentLocation(
+        onSuccess = { location ->
+            prefs?.putCurrentLocation(location.coords)
+            viewModel.addLocation(location.latitude, location.longitude)
+            selectedPos = 0
         },
-        onDisabled = { /* TODO: show message */ }
+        onFailure = { scaffoldState.showSnackBar(context, R.string.location_current_error) }
+    )
+
+    val locationSettings = locationSettings(
+        onEnabled = { currentLocation() },
+        onDisabled = { scaffoldState.showSnackBar(context, R.string.location_need_turn_on_gps) }
     )
 
     val locationPermission = locationPermission(
         onEnabled = {
             LocationHelper.checkLocationSettings(
                 context = context,
-                onEnabled = {
-                    locationHelper.getCurrentLocation(
-                        onSuccess = { location ->
-                            prefs?.putCurrentLocation(location.coords)
-                            viewModel.getLocations()
-                            selectedPos = 0
-                        },
-                        onFailure = { /* TODO: show message */ }
-                    )
-                },
-                onDisabled = { intentSenderRequest ->
-                    locationSettings.requestLocationSettings(intentSenderRequest)
-                }
+                onEnabled = { currentLocation() },
+                onDisabled = { intent -> locationSettings.requestLocationSettings(intent) }
             )
         },
-        onDisabled = { /* TODO: show message */ }
+        onDisabled = { scaffoldState.showSnackBar(context, R.string.location_no_permissions) }
     )
 
     LaunchedEffect("") {
         viewModel.getLocations()
+    }
+
+    LaunchedEffect(state.error) {
+        scaffoldState.showSnackBar(state.error.asString(context))
     }
 
     SearchScreen(

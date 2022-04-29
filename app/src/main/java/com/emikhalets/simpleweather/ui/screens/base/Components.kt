@@ -18,7 +18,10 @@ import com.emikhalets.simpleweather.ui.theme.surfaceBottom
 import com.emikhalets.simpleweather.utils.extensions.appSurface
 
 @Composable
-fun AppScaffold(navController: NavHostController, content: @Composable () -> Unit) {
+fun AppScaffold(
+    navController: NavHostController,
+    content: @Composable () -> Unit
+) {
     Scaffold(
         bottomBar = { AppBottomBar(navController) },
         content = {

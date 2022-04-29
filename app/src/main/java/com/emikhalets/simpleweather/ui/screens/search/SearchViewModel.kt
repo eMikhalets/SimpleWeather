@@ -68,6 +68,22 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun addLocation(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            val entity = SearchDBEntity(
+                id = 1,
+                name = "My location",
+                region = "My Region",
+                country = "My Country",
+                latitude = latitude,
+                longitude = longitude
+            )
+            databaseRepo.insertLocation(entity)
+                .onSuccess { handleSuccessAddLocationResponse(it) }
+                .onFailure { handleFailureResponse(it) }
+        }
+    }
+
     // TODO: add delete button in ui
     fun deleteLocation(location: SearchDBEntity) {
         viewModelScope.launch {
