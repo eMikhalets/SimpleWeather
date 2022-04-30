@@ -1,7 +1,10 @@
 package com.emikhalets.simpleweather.ui.screens.home
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +51,7 @@ import com.emikhalets.simpleweather.ui.screens.base.entity.DailyForecastEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HomeCurrentEntity
 import com.emikhalets.simpleweather.ui.screens.base.entity.HourlyForecastEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
+import com.emikhalets.simpleweather.ui.theme.activeBackground
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.utils.extensions.activeBackground
 import com.emikhalets.simpleweather.utils.extensions.activeTextColor
@@ -180,6 +184,20 @@ fun HomeScreenHeader(
 fun HomeScreenHeaderSwitcher() {
     var activeFirst by remember { mutableStateOf(true) }
 
+    val indicationSource = remember { MutableInteractionSource() }
+
+    val colorFirst by animateColorAsState(
+        targetValue = if (activeFirst) MaterialTheme.colors.activeBackground
+        else Color.Transparent,
+        animationSpec = tween(durationMillis = 300)
+    )
+
+    val colorSecond by animateColorAsState(
+        targetValue = if (!activeFirst) MaterialTheme.colors.activeBackground
+        else Color.Transparent,
+        animationSpec = tween(durationMillis = 300)
+    )
+
     Row(
         modifier = Modifier
             .background(
@@ -193,18 +211,30 @@ fun HomeScreenHeaderSwitcher() {
             fontSize = 16.sp,
             color = activeTextColor(activeFirst),
             modifier = Modifier
-                .activeBackground(activeFirst)
+                .background(
+                    color = colorFirst,
+                    shape = MaterialTheme.shapes.medium
+                )
                 .padding(40.dp, 16.dp)
-                .clickable { activeFirst = true }
+                .clickable(
+                    interactionSource = indicationSource,
+                    indication = null
+                ) { activeFirst = true }
         )
         Text(
             text = stringResource(id = R.string.home_air_quality),
             fontSize = 16.sp,
             color = activeTextColor(!activeFirst),
             modifier = Modifier
-                .activeBackground(!activeFirst)
+                .background(
+                    color = colorSecond,
+                    shape = MaterialTheme.shapes.medium
+                )
                 .padding(40.dp, 16.dp)
-                .clickable { activeFirst = false }
+                .clickable(
+                    interactionSource = indicationSource,
+                    indication = null
+                ) { activeFirst = false }
         )
     }
 }

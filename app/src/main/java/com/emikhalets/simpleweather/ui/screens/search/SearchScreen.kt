@@ -1,8 +1,11 @@
 package com.emikhalets.simpleweather.ui.screens.search
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -49,10 +52,10 @@ import com.emikhalets.simpleweather.App.Companion.prefs
 import com.emikhalets.simpleweather.R
 import com.emikhalets.simpleweather.data.database.SearchDBEntity
 import com.emikhalets.simpleweather.ui.theme.AppTheme
+import com.emikhalets.simpleweather.ui.theme.activeBackground
 import com.emikhalets.simpleweather.ui.theme.inactiveBackground
 import com.emikhalets.simpleweather.ui.theme.textFieldBackground
 import com.emikhalets.simpleweather.utils.LocationHelper
-import com.emikhalets.simpleweather.utils.extensions.activeBackground
 import com.emikhalets.simpleweather.utils.extensions.appSurface
 import com.emikhalets.simpleweather.utils.extensions.coords
 import com.emikhalets.simpleweather.utils.extensions.previewSearchScreenLocationList
@@ -62,9 +65,8 @@ import com.emikhalets.simpleweather.utils.locationSettings
 import com.emikhalets.simpleweather.utils.requestLocationPermissions
 import com.emikhalets.simpleweather.utils.requestLocationSettings
 
-// TODO: header scroll
-//  color changing animations
-// FIXME: odd locations count empty place background
+// TODO:
+// FIXME: odd last location count empty place background
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
@@ -306,17 +308,27 @@ fun SearchScreenLocationItem(
     onSelectPosChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val indicationSource = remember { MutableInteractionSource() }
+
+    val animatedColor by animateColorAsState(
+        targetValue = if (isActive) MaterialTheme.colors.activeBackground
+        else MaterialTheme.colors.inactiveBackground,
+        animationSpec = tween(durationMillis = 300)
+    )
+
     Column(
         modifier = modifier
             .padding(8.dp)
             .background(
-                color = MaterialTheme.colors.inactiveBackground,
+                color = animatedColor,
                 shape = MaterialTheme.shapes.medium
             )
-            .activeBackground(isActive)
             .padding(16.dp, 8.dp)
             .clip(MaterialTheme.shapes.medium)
-            .clickable { onSelectPosChange(index) }
+            .clickable(
+                interactionSource = indicationSource,
+                indication = null
+            ) { onSelectPosChange(index) }
     ) {
         Text(
             text = entity.name,

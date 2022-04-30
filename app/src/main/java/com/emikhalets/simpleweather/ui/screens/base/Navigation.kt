@@ -22,6 +22,7 @@ sealed class AppScreen(val route: String, val icon: ImageVector) {
     object Settings : AppScreen("settings", Icons.Default.Settings)
 }
 
+// TODO: navigate back from search screen doesn't close app
 @Composable
 fun AppNavHost(
     navController: NavHostController,
