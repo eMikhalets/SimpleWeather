@@ -3,6 +3,7 @@
     <string name="app_unit_millibar">mb</string>
     <string name="app_unit_inches">in</string>
     <string name="app_unit_celsius">\u00B0C</string>
+    <string name="app_unit_celsius_value">%d \u00B0C</string>
     <string name="app_unit_fahrenheit">F</string>
     <string name="app_unit_kilometer">kph</string>
     <string name="app_unit_mile">mph</string>
@@ -10,6 +11,8 @@
     <string name="app_value_with_space" translatable="false">%d %s</string>
 
     <string name="prefs_no_saved_location">No saved location, go to search tab</string>
+
+    <string name="widget_weather_update_error">Weather update error</string>
 
     <string name="location_need_turn_on_gps">You need to enable geolocation on your phone</string>
     <string name="location_current_error">Error while determining current location</string>

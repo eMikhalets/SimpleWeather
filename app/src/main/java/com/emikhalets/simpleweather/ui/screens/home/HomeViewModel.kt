@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val location = prefs?.getCurrentLocation()
             if (!location.isNullOrEmpty()) {
-                remoteRepo.getWeather(location)
+                remoteRepo.forecast(location)
                     .onSuccess { handleSuccessWeatherResponse(it) }
                     .onFailure { handleFailureResponse(it) }
             } else {

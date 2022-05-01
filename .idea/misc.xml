@@ -4,6 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Code/Pet/0_PetApps/SimpleWeather/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/Code/Pet/0_PetApps/SimpleWeather/app/src/main/res/drawable/background_widget.xml" value="0.1" />
+        <entry key="..\:/Code/Pet/0_PetApps/SimpleWeather/app/src/main/res/layout/layout_weather_widget.xml" value="0.2171875" />
+        <entry key="..\:/Code/Pet/0_PetApps/SimpleWeather/app/src/main/res/layout/preview_weather_widget.xml" value="0.1361111111111111" />
+        <entry key="..\:/Code/Pet/0_PetApps/SimpleWeather/app/src/main/res/xml/weather_widget.xml" value="0.2171875" />
+        <entry key="..\:/Code/Pet/0_PetApps/SimpleWeather/app/src/main/res/xml/widget_provider_weather.xml" value="0.2171875" />
       </map>
     </option>
   </component>

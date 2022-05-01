@@ -1,15 +1,20 @@
 package com.emikhalets.simpleweather.data.repository
 
 import com.emikhalets.simpleweather.data.remote.ApiService
+import com.emikhalets.simpleweather.data.remote.entity.CurrentWeatherResponse
 import com.emikhalets.simpleweather.data.remote.entity.ForecastWeatherResponse
 import com.emikhalets.simpleweather.data.remote.entity.SearchData
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val api: ApiService
+    private val api: ApiService,
 ) : WeatherRepository {
 
-    override suspend fun getWeather(query: String): Result<ForecastWeatherResponse> {
+    override suspend fun current(query: String): Result<CurrentWeatherResponse> {
+        return runCatching { api.current(query) }
+    }
+
+    override suspend fun forecast(query: String): Result<ForecastWeatherResponse> {
         return runCatching { api.forecast(query) }
     }
 
